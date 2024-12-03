@@ -24,6 +24,7 @@ export const createSession = async ({ sessionId, userId }) => {
   const refreshToken = jwt.sign(payload, jwt_secret, { expiresIn: REFRESH_TOKEN_LIFETIME });
   const accessTokenValidUntil = new Date(Date.now() + ACCESS_TOKET_LIFETIME);
   const refreshTokenValidUntil = new Date(Date.now() + REFRESH_TOKEN_LIFETIME);
+  console.log(refreshTokenValidUntil.toLocaleString());
 
   return await SessionCollection.create({
     userId,
