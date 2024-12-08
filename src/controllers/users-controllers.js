@@ -7,7 +7,7 @@ import {
   userRefresh,
   userLogout,
 } from '../services/user-services.js';
-import { createSession, findSession } from '../services/session-service.js';
+import { createSession, findSession, deleteSession } from '../services/session-service.js';
 
 export const userRegisterController = async (req, res) => {
   const userValue = req.body;
@@ -85,10 +85,18 @@ export const userRefreshController = async (req, res) => {
 
   const isExpiredSession = new Date() > new Date(currentSession.refreshTokenValidUntil);
   if (isExpiredSession) {
+    await deleteSession(sessionId);
     throw createHttpError(401, 'Session expired');
   }
 
+  let currentUser;
+
   const newSession = await userRefresh(currentSession);
+  if (newSession) {
+    currentUser = await findUser(newSession.userId);
+  }
+
+  // console.log(currentUser);
 
   res.cookie('sessionId', newSession._id, {
     httpOnly: true,
@@ -104,6 +112,8 @@ export const userRefreshController = async (req, res) => {
     status: 200,
     message: 'Refresh successfully!',
     data: {
+      name: currentUser.name,
+      email: currentUser.email,
       accessToken: newSession.accessToken,
     },
   });
