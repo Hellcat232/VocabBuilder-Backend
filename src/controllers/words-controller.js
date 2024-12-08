@@ -5,6 +5,7 @@ import {
   createWord,
   findPublicWord,
   updateWord,
+  getAllPablicWords,
 } from '../services/public-words-service.js';
 
 import {
@@ -12,6 +13,7 @@ import {
   updateSelfWord,
   findUserWords,
   deletePrivateWord,
+  getAllPrivateWords,
 } from '../services/user-word-service.js';
 import { categories } from '../constants/categories.js';
 import { findUser } from '../services/user-services.js';
@@ -169,5 +171,51 @@ export const deletePrivateWordController = async (req, res) => {
     status: 204,
     message: 'Word was deleted from you collection',
     data: deletedWord,
+  });
+};
+
+export const getAllPablicWordsController = async (req, res) => {
+  const { page, perPage } = req.query;
+  const { refreshToken } = req.cookies;
+
+  const { userId, exp } = await jwt.verify(refreshToken, env('JWT_SECRET'));
+  if (Date.now() > exp * 1000) {
+    throw createHttpError(401, 'Unauthorized');
+  }
+
+  const isUser = await findUser({ _id: userId });
+  if (!isUser) {
+    throw createHttpError(404, 'User not found');
+  }
+
+  const getAllWords = await getAllPablicWords({ page, perPage });
+
+  res.status(200).json({
+    status: 200,
+    message: 'Got all pablic words',
+    data: getAllWords,
+  });
+};
+
+export const getAllPrivateWordsController = async (req, res) => {
+  const { page, perPage } = req.query;
+  const { refreshToken } = req.cookies;
+
+  const { userId, exp } = await jwt.verify(refreshToken, env('JWT_SECRET'));
+  if (Date.now() > exp * 1000) {
+    throw createHttpError(401, 'Unauthorized');
+  }
+
+  const isUser = await findUser({ _id: userId });
+  if (!isUser) {
+    throw createHttpError(404, 'User not found');
+  }
+
+  const getPrivateWords = await getAllPrivateWords({ page, perPage });
+
+  res.status(200).json({
+    status: 200,
+    message: 'Get your words collection',
+    data: getPrivateWords,
   });
 };

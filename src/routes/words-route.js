@@ -7,6 +7,8 @@ import {
   updateWordController,
   updateSelfWordController,
   deletePrivateWordController,
+  getAllPablicWordsController,
+  getAllPrivateWordsController,
 } from '../controllers/words-controller.js';
 
 import { validateBody } from '../utils/validateBody.js';
@@ -42,5 +44,9 @@ wordsRoute.patch(
 );
 
 wordsRoute.delete('/delete/:id', ctrlWrapper(deletePrivateWordController));
+
+wordsRoute.get('/all', ctrlWrapper(getAllPablicWordsController));
+
+wordsRoute.get('/own', ctrlWrapper(getAllPrivateWordsController));
 
 export default wordsRoute;
