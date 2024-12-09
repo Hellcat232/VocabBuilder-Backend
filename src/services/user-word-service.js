@@ -1,7 +1,10 @@
 import { UserWordsCollection } from '../database/models/user-words-schema.js';
+import { TasksCollection } from '../database/models/tasks-schema.js';
 import { calculatePaginationData } from '../utils/calculatePaginationData.js';
 
 export const findUserWords = (filter) => UserWordsCollection.findOne(filter);
+
+export const findTasks = (filter) => TasksCollection.findOne(filter);
 
 export const addWordToUserCollection = async (word) => {
   const { _id, en, ua, owner, progress, category, isIrregular, addedBy } = word;
@@ -48,4 +51,10 @@ export const getAllPrivateWords = async ({ page, perPage }) => {
     getPrivateWords,
     ...paginationData,
   };
+};
+
+export const studyTasks = async (userId) => {
+  const userTask = await TasksCollection.find(userId);
+
+  return userTask;
 };

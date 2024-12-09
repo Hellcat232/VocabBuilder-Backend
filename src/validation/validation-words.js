@@ -31,3 +31,8 @@ export const validationUpdateWords = Joi.object({
   addedBy: Joi.string(),
   progress: Joi.string(),
 });
+
+export const validationAssistant = Joi.object({
+  word: Joi.string().required(),
+  targetLanguage: Joi.string().required(),
+});

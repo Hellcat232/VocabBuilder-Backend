@@ -3,19 +3,25 @@ import express from 'express';
 import {
   getCategoriesController,
   createWordController,
-  addWordToUserCollectionController,
   updateWordController,
+  getAllPablicWordsController,
+  askChatController,
+} from '../controllers/words-public-controller.js';
+
+import {
+  addWordToUserCollectionController,
+  getAllPrivateWordsController,
   updateSelfWordController,
   deletePrivateWordController,
-  getAllPablicWordsController,
-  getAllPrivateWordsController,
-} from '../controllers/words-controller.js';
+  getUserTasks,
+} from '../controllers/words-private-controller.js';
 
 import { validateBody } from '../utils/validateBody.js';
 import {
   validationWords,
   validationAddWords,
   validationUpdateWords,
+  validationAssistant,
 } from '../validation/validation-words.js';
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
 
@@ -48,5 +54,13 @@ wordsRoute.delete('/delete/:id', ctrlWrapper(deletePrivateWordController));
 wordsRoute.get('/all', ctrlWrapper(getAllPablicWordsController));
 
 wordsRoute.get('/own', ctrlWrapper(getAllPrivateWordsController));
+
+wordsRoute.get('/statistics');
+
+wordsRoute.get('/tasks', ctrlWrapper(getUserTasks));
+
+wordsRoute.post('/answers');
+
+wordsRoute.post('/translate', validateBody(validationAssistant), ctrlWrapper(askChatController));
 
 export default wordsRoute;
