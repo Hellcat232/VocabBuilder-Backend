@@ -14,6 +14,7 @@ import {
   updateSelfWordController,
   deletePrivateWordController,
   getUserTasks,
+  usersAnswerController,
 } from '../controllers/words-private-controller.js';
 
 import { validateBody } from '../utils/validateBody.js';
@@ -22,6 +23,7 @@ import {
   validationAddWords,
   validationUpdateWords,
   validationAssistant,
+  validationAnswers,
 } from '../validation/validation-words.js';
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
 
@@ -59,7 +61,7 @@ wordsRoute.get('/statistics');
 
 wordsRoute.get('/tasks', ctrlWrapper(getUserTasks));
 
-wordsRoute.post('/answers');
+wordsRoute.post('/answers', validateBody(validationAnswers), ctrlWrapper(usersAnswerController));
 
 wordsRoute.post('/translate', validateBody(validationAssistant), ctrlWrapper(askChatController));
 

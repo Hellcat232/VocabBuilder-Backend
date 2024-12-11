@@ -9,6 +9,7 @@ import {
   getAllPrivateWords,
   studyTasks,
   findTasks,
+  usersAnswer,
 } from '../services/user-word-service.js';
 
 import { TasksCollection } from '../database/models/tasks-schema.js';
@@ -16,7 +17,6 @@ import { TasksCollection } from '../database/models/tasks-schema.js';
 import { findPublicWord } from '../services/public-words-service.js';
 import { env } from '../utils/env.js';
 import { findUser } from '../services/user-services.js';
-import { get } from 'mongoose';
 
 export const addWordToUserCollectionController = async (req, res) => {
   const { id } = req.params;
@@ -41,7 +41,7 @@ export const addWordToUserCollectionController = async (req, res) => {
   if (addedWord) {
     await TasksCollection.create({
       ua: addedWord.ua,
-      task: addedWord.en,
+      task: 'en',
       wordId: addedWord._id,
       userId: user._id,
     });
@@ -153,18 +153,29 @@ export const getUserTasks = async (req, res) => {
   if (!isUsersTask) {
     404, 'Task not found';
   }
-  console.log(isUsersTask);
 
-  const getTask = await studyTasks({ userId: isUsersTask.userId });
-  console.log(getTask);
+  const getUsersTasks = await studyTasks({ userId: isUsersTask.userId });
 
   res.status(200).json({
     status: 200,
     message: 'Your tasks',
-    data: {
-      _id: getTask._id,
-      ua: getTask.ua,
-      task: 'en',
-    },
+    tasks: getUsersTasks,
+  });
+};
+
+export const usersAnswerController = async (req, res) => {
+  const { tasksId, en, ua, task } = req.body;
+
+  const response = await usersAnswer({
+    tasksId,
+    en,
+    ua,
+    task,
+  });
+
+  res.status(200).json({
+    status: 200,
+    message: 'Take your answer',
+    answer: response,
   });
 };

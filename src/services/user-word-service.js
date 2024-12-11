@@ -1,4 +1,5 @@
 import { UserWordsCollection } from '../database/models/user-words-schema.js';
+import { AnswersCollection } from '../database/models/answers-schema.js';
 import { TasksCollection } from '../database/models/tasks-schema.js';
 import { calculatePaginationData } from '../utils/calculatePaginationData.js';
 
@@ -53,8 +54,19 @@ export const getAllPrivateWords = async ({ page, perPage }) => {
   };
 };
 
-export const studyTasks = async (userId) => {
-  const userTask = await TasksCollection.find(userId);
+export const studyTasks = async (filter) => {
+  const userTask = await TasksCollection.find(filter);
 
   return userTask;
+};
+
+export const usersAnswer = async (answers) => {
+  const correct = await UserWordsCollection.findOne({ en: answers.en });
+
+  const isDone = Boolean(correct.en === answers.en);
+  console.log(isDone);
+
+  const answer = await AnswersCollection.create(answers);
+
+  return answer;
 };

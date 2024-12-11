@@ -1,6 +1,7 @@
 import Joi from 'joi';
 
 import { EngRegExp, UaRegExp } from '../constants/words.js';
+import { kind } from 'openai/_shims/index.mjs';
 
 export const validationWords = Joi.object({
   en: Joi.string().pattern(EngRegExp).required(),
@@ -35,4 +36,11 @@ export const validationUpdateWords = Joi.object({
 export const validationAssistant = Joi.object({
   word: Joi.string().required(),
   targetLanguage: Joi.string().required(),
+});
+
+export const validationAnswers = Joi.object({
+  tasksId: Joi.string().required(),
+  ua: Joi.string().required(),
+  en: Joi.string().required(),
+  task: Joi.string().required(),
 });
